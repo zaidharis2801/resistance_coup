@@ -1,6 +1,6 @@
 <br/>
 <p align="center">
-  <h3 align="center">The Resistance: Coup</h3>
+  <h3 align="center">The Resistance: Coup Assesment</h3>
 
   <p align="center">
     A text-based version of the popular party game!
