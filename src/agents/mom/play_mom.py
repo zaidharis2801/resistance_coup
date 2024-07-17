@@ -121,7 +121,7 @@ class PlayMomAgent:
             "Steal"
         ]
 
-        plays =avalaible_actions
+        #plays =avalaible_actions
 
         plays2 = [
             "Coup",

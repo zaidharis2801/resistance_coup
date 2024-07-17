@@ -120,7 +120,7 @@ class PlayDadAgent:
             "Assassinate",
             "Steal"
         ]
-        plays =avalaible_actions
+        #plays =avalaible_actions
         plays2 = [
             "Coup",
             "Assassinate",

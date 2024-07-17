@@ -67,12 +67,17 @@ class AIPlayer(BasePlayer):
         print("#"*80)
         print(output_dict)
         target_player = None
-        for p in other_players:
-            print(p)
-            print("@@"*80)
+       
+            
         if target_action.requires_target:
             if traget != "":
                 for i in range(len(players_except_self)):
+                    print("@"*80)
+                    print(players_except_self)
+                    print(type(players_except_self))
+                    print(type(players_except_self[i]))
+                    print(players_except_self[i])
+                    print(players_except_self[i]["id"])
                     if players_except_self[i].id == traget:
                         target_player = other_players[i]
             else:
