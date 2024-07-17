@@ -127,9 +127,14 @@ class PlayDadAgent:
 
         chosen_play = random.choice(plays)
         attack_on_name = ""
+        def get_players_except_self(rational_knowledge, self_player_id):
+            return [player for player in rational_knowledge["players"].values() if player["id"] != self_player_id]
+        self_player_id = rational_knowledge["player"]["id"]
+        players_except_self = get_players_except_self(rational_knowledge, self_player_id)
+
         if chosen_play in plays2:
-            attack_on = random.randint(0, len(rational_knowledge["players_except_self"])-1)
-            attack_on_name = rational_knowledge["players_except_self"]["Player" + str(attack_on)]["name"]
+            attack_on = random.randint(0, len(players_except_self)-1)
+            attack_on_name = rational_knowledge["players"]["Player" + str(attack_on)]["name"]
         return chosen_play, attack_on_name
 
     @staticmethod
