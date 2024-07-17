@@ -120,7 +120,7 @@ class PlayDadAgent:
             "Assassinate",
             "Steal"
         ]
-        #plays =avalaible_actions
+        plays =avalaible_actions
         plays2 = [
             "Coup",
             "Assassinate",
@@ -135,9 +135,9 @@ class PlayDadAgent:
         players_except_self = get_players_except_self(rational_knowledge, self_player_id)
 
         if chosen_play in plays2:
-            attack_on = random.randint(0, len(players_except_self)-1)
+            attack_on = random.choice(players_except_self)["id"]
             attack_on_name = rational_knowledge["players"]["Player" + str(attack_on)]["id"]
-        return chosen_play, attack_on_name
+        return chosen_play, attack_on
 
     @staticmethod
     @tool("final_answer_play")
