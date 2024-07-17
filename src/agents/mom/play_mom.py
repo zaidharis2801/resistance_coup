@@ -18,6 +18,7 @@ load_dotenv('.env')
 
 class PlayAgentState(TypedDict):
     rational_knowledge: str
+    avalaible_actions : list[str]
     agent_out: Union[AgentAction, AgentFinish, None]
     intermediate_steps: Annotated[list[tuple[AgentAction, str]], operator.add]
 
@@ -97,7 +98,7 @@ class PlayMomAgent:
 
     @staticmethod
     @tool("play")
-    def play_tool(rational_knowledge: str):
+    def play_tool(rational_knowledge: str,avalaible_actions:list):
         """
     Simulates making a play in the game Coup.
 
@@ -119,6 +120,9 @@ class PlayMomAgent:
             "Assassinate",
             "Steal"
         ]
+        
+        plays =avalaible_actions
+
         plays2 = [
             "Coup",
             "Assassinate",

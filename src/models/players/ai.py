@@ -15,17 +15,6 @@ class AIPlayer(BasePlayer):
         """Choose the next action to perform"""
 
         available_actions = self.available_actions()
-
-        print_text(f"[bold magenta]{self}[/] is thinking...", with_markup=True)
-        rational_knowledge_dict_str = json.dumps(knowledgebase.to_dict())
-        inputs_play2 = {
-            "rational_knowledge": rational_knowledge_dict_str,
-            "intermediate_steps": []
-        }
-
-        out = play_agent.get_result(inputs_play2)
-        output_dict = json.loads(out["agent_out"])
-        # time.sleep(1)
         action_map = {
             "Income": IncomeAction(),
             "Foreign Aid": ForeignAidAction(),
@@ -35,6 +24,22 @@ class AIPlayer(BasePlayer):
             "Steal": StealAction(),
             "Exchange": ExchangeAction()
         }
+        reverse_action_map = {v: k for k, v in action_map.items()}
+        available_actions2 = [reverse_action_map[type(action)] for action in available_actions]
+
+
+        print_text(f"[bold magenta]{self}[/] is thinking...", with_markup=True)
+        rational_knowledge_dict_str = json.dumps(knowledgebase.to_dict())
+        inputs_play2 = {
+            "rational_knowledge": rational_knowledge_dict_str,
+            "avalaible_actions"  : available_actions2,
+            "intermediate_steps": []
+        }
+
+        out = play_agent.get_result(inputs_play2)
+        output_dict = json.loads(out["agent_out"])
+        # time.sleep(1)
+        
         play = output_dict.get("play")
         traget  = output_dict.get('attack_on')
 
@@ -45,6 +50,8 @@ class AIPlayer(BasePlayer):
         if len(available_actions) == 1:
             player = random.choice(other_players)
             return available_actions[0], player
+        
+
 
         # Pick any other random choice (might be a bluff)
         
