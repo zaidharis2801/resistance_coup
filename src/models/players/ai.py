@@ -78,7 +78,7 @@ class AIPlayer(BasePlayer):
                     print(type(players_except_self[i]))
                     print(players_except_self[i])
                     print(players_except_self[i]["id"])
-                    if players_except_self[i].id == traget:
+                    if players_except_self[i]["id"] == traget:
                         target_player = other_players[i]
             else:
                 target_player = random.choice(other_players)
