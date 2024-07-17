@@ -106,6 +106,9 @@ class AIPlayer(BasePlayer):
 
         # Get the value of 'challenge'
         challenge_value = agent_out_dict["challenge"]
+        print(challenge_value)
+        print(challenge_value(type))
+        print(bool(challenge_value))
         return challenge_value
 
     def determine_counter(self, player: BasePlayer) -> bool:
