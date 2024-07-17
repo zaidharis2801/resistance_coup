@@ -49,6 +49,8 @@ class AIPlayer(BasePlayer):
         # Coup is only option
         if len(available_actions) == 1:
             player = random.choice(other_players)
+            print("here"*29)
+            print(available_actions_strings)
             return available_actions[0], player
         
 
