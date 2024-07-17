@@ -52,7 +52,9 @@ class AIPlayer(BasePlayer):
         print("#"*80)
         print(output_dict)
         target_player = None
-
+        for p in other_players:
+            print(p)
+            print("@@"*80)
         if target_action.requires_target:
             target_player = random.choice(other_players)
 
