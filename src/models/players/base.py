@@ -65,7 +65,8 @@ class BasePlayer(BaseModel, ABC):
 
     @abstractmethod
     def choose_action(
-        self, other_players: List["BasePlayer"]
+        self, other_players: List["BasePlayer"],
+        knowledgebase,play_agent
     ) -> Tuple[Action, Optional["BasePlayer"]]:
         """Choose the next action to perform"""
         pass

@@ -1,31 +1,54 @@
 import random
 import time
 from typing import List, Optional, Tuple
-
+import json
 from src.models.action import Action
 from src.models.card import Card
 from src.models.players.base import BasePlayer
 from src.utils.print import print_text, print_texts
-
+from src.models.action import *
 
 class AIPlayer(BasePlayer):
     is_ai: bool = True
 
-    def choose_action(self, other_players: List[BasePlayer]) -> Tuple[Action, Optional[BasePlayer]]:
+    def choose_action(self, other_players: List[BasePlayer],knowledgebase,play_agent) -> Tuple[Action, Optional[BasePlayer]]:
         """Choose the next action to perform"""
 
         available_actions = self.available_actions()
 
         print_text(f"[bold magenta]{self}[/] is thinking...", with_markup=True)
-        time.sleep(1)
+        rational_knowledge_dict_str = json.dumps(knowledgebase.to_dict())
+        inputs_play2 = {
+            "rational_knowledge": rational_knowledge_dict_str,
+            "intermediate_steps": []
+        }
 
+        out = play_agent.get_result(inputs_play2)
+        output_dict = json.loads(out["agent_out"])
+        # time.sleep(1)
+        action_map = {
+            "Income": IncomeAction(),
+            "Foreign Aid": ForeignAidAction(),
+            "Coup": CoupAction(),
+            "Tax": TaxAction(),
+            "Assassinate": AssassinateAction(),
+            "Steal": StealAction(),
+            "Exchange": ExchangeAction()
+        }
+
+        
+        
         # Coup is only option
         if len(available_actions) == 1:
             player = random.choice(other_players)
             return available_actions[0], player
 
         # Pick any other random choice (might be a bluff)
-        target_action = random.choice(available_actions)
+        play = output_dict.get("play")
+        target_action = action_map.get(play, random.choice(available_actions))
+
+        print("3"*80)
+        print((play,target_action))
         target_player = None
 
         if target_action.requires_target:

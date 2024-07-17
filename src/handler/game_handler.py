@@ -358,23 +358,19 @@ class ResistanceCoupGameHandler:
         print(self._current_player_index)
          
         # Choose an action to perform
-        target_action, target_player = self._action_phase(players_without_current)
-        rational_knowledge_dict_str = json.dumps(self._knowledges[self._current_player_index].to_dict())
+        target_action, target_player = self._action_phase(players_without_current,self._knowledges[self._current_player_index],self._play_agents[self._current_player_index])
+        # rational_knowledge_dict_str = json.dumps(self._knowledges[self._current_player_index].to_dict())
         
-        inputs_play2 = {
-            "rational_knowledge": rational_knowledge_dict_str,
-            "intermediate_steps": []
-        }
+        # inputs_play2 = {
+        #     "rational_knowledge": rational_knowledge_dict_str,
+        #     "intermediate_steps": []
+        # }
 
-        out = self._play_agents[self._current_player_index].get_result(inputs_play2)
-        print(out["agent_out"])
-        print(type(out["agent_out"]))
-        output_dict = json.loads(out["agent_out"])
-        print(output_dict)
-        print(output_dict["play"])  # Output: Swap
-        print(output_dict["attack_on"])  # Output: 
-        print(output_dict["quote"])
-
+        # out = self._play_agents[self._current_player_index].get_result(inputs_play2)
+        # print(out["agent_out"])
+        # print(type(out["agent_out"]))
+        # output_dict = json.loads(out["agent_out"])
+        
         input("buffer: ")
 
         move_dict["action"] = str(target_action.action_type.value)
