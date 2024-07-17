@@ -135,7 +135,8 @@ class PlayMomAgent:
             return [player for player in rational_knowledge["players"].values() if player["id"] != self_player_id]
         self_player_id = rational_knowledge["player"]["id"]
         players_except_self = get_players_except_self(rational_knowledge, self_player_id)
-
+        print(players_except_self)
+        print("*"*80)
         if chosen_play in plays2:
             attack_on = random.randint(0, len(players_except_self)-1)
             attack_on_name = rational_knowledge["players"]["Player" + str(attack_on)]["id"]
