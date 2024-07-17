@@ -18,7 +18,7 @@ class RationalPlayerKnowledge:
             'Contessa': 3
         }
         self.coins = {p.id: 2 for p in players}  # Assuming starting coins for all players is 2
-        self.players_except_self = [p for p in players if p.id != player.id]
+        
 
         for card in own_cards:
             self.card_counts[card] -= 1
@@ -31,14 +31,12 @@ class RationalPlayerKnowledge:
                 f"Own Cards: {self.own_cards}\n"
                 f"Revealed Cards: {self.revealed_cards}\n"
                 f"Actions Taken: {self.actions_taken}\n"
-                f"Plays Made: {self.plays_made}\n"
                 f"Claims: {self.claims}\n"
                 f"Challenges: {self.challenges}\n"
                 f"Blocked Actions: {self.blocked_actions}\n"
                 f"Card Counts: {self.card_counts}\n"
                 f"Unknown Cards: {self.unknown_cards}\n"
-                f"Coins: {self.coins}\n"
-                f"Players Except Self: {', '.join([p.name for p in self.players_except_self])}")
+                f"Coins: {self.coins}")
 
     def to_dict(self):
         return {
@@ -48,14 +46,12 @@ class RationalPlayerKnowledge:
             "own_cards": self.own_cards,
             "revealed_cards": self.revealed_cards,
             "actions_taken": self.actions_taken,
-            "plays_made": self.plays_made,
             "claims": {id: claims for id, claims in self.claims.items()},
             "challenges": self.challenges,
             "blocked_actions": self.blocked_actions,
             "card_counts": self.card_counts,
             "unknown_cards": self.unknown_cards,
-            "coins": self.coins,
-            "players_except_self": [player.to_dict() for player in self.players_except_self]
+            "coins": self.coins
         }
 
     def update_after_move(self, move, is_current_player):
