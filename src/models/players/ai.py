@@ -97,7 +97,7 @@ class AIPlayer(BasePlayer):
         print("%"*80)
         result = challengeAgent.get_result(inputs_challenge)
         print(type(result["agent_out"]))
-        print(result["agent_out"]["challenge"])
+        print(result["agent_out"])
         
         return random.randint(0, 4) == 0
 
