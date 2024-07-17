@@ -59,7 +59,7 @@ class BlockAgentDad:
             current_quote="I assure you, I'm the Duke. Anyone who doubts me will regret it."
         )
 
-        self.llm  = ChatOpenAI(temperature=0)
+        self.llm  = ChatOpenAI(temperature=0,model_name="gpt-4o")
         self.player = "Dad"
 
         self.blockPrompt = PromptTemplate.from_template(
@@ -195,10 +195,10 @@ class BlockAgentDad:
     {agent_scratchpad}
 """
         )
-    
+        
 
         query_agent_runnable=create_openai_tools_agent(
-            llm=ChatOpenAI(temperature=0),
+            llm=ChatOpenAI(temperature=0,model_name="gpt-4o"),
             tools=[BlockAgentDad.block_tool_player],
             prompt=blockPrompt
 )   
@@ -229,7 +229,7 @@ class BlockAgentDad:
 
     Do you block given the current context. Just say why in colloquial terms as if you are saying to your fellow players.
     """
-        final_answer_llm = ChatOpenAI(temperature=0).bind_tools([BlockAgentDad.final_answer_tool_blocking], tool_choice="final_answer")
+        final_answer_llm = ChatOpenAI(temperature=0,model_name="gpt-4o").bind_tools([BlockAgentDad.final_answer_tool_blocking], tool_choice="final_answer")
 
         out = final_answer_llm.invoke(prompt2)
         function_call = out.additional_kwargs["tool_calls"][-1]["function"]["arguments"]

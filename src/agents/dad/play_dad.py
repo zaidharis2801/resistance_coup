@@ -156,7 +156,7 @@ class PlayDadAgent:
     @staticmethod
     def run_query_agent_play(state: list):
         query_agent_runnable = create_openai_tools_agent(
-            llm=ChatOpenAI(temperature=0),
+            llm=ChatOpenAI(temperature=0,model_name="gpt-4o"),
             tools=[PlayDadAgent.play_tool],
             prompt=PlayDadAgent.play_prompt
         )
@@ -195,7 +195,7 @@ class PlayDadAgent:
 
         What do you play given the current context? Just say why in colloquial terms as if you are saying to your fellow players.
         """
-        final_answer_llm = ChatOpenAI(temperature=0).bind_tools([PlayDadAgent.final_answer_tool_play], tool_choice="final_answer_play")
+        final_answer_llm = ChatOpenAI(temperature=0,model_name="gpt-4o").bind_tools([PlayDadAgent.final_answer_tool_play], tool_choice="final_answer_play")
         out = final_answer_llm.invoke(prompt)
         function_call = out.additional_kwargs["tool_calls"][-1]["function"]["arguments"]
         return {"agent_out": function_call}
