@@ -44,6 +44,12 @@ class AIPlayer(BasePlayer):
         play = output_dict.get("play")
         traget  = output_dict.get('attack_on')
 
+
+        rational_knowledge = knowledgebase.to_dict()
+        def get_players_except_self(rational_knowledge, self_player_id):
+            return [player for player in rational_knowledge["players"].values() if player["id"] != self_player_id]
+        self_player_id = rational_knowledge["player"]["id"]
+        players_except_self = get_players_except_self(rational_knowledge, self_player_id)
         target_action = action_map.get(play, random.choice(available_actions))
         
         
@@ -66,9 +72,9 @@ class AIPlayer(BasePlayer):
             print("@@"*80)
         if target_action.requires_target:
             if traget != "":
-                for player in other_players:
-                    if player.name == traget:
-                        target_player = player
+                for i in range(len(players_except_self)):
+                    if players_except_self[i].id == traget:
+                        target_player = other_players[i]
             else:
                 target_player = random.choice(other_players)
 
