@@ -19,6 +19,7 @@ from src.models.mymodels.playerbase import PlayerBase
 from src.models.mymodels.rationalplayerknowledge import RationalPlayerKnowledge
 
 from src.agents.factory.playFactory import PlayAgentFactory
+from src.agents.factory.challengeFactory import ChallengeAgentFactory
 
 
 # Load environment variables from .env file
@@ -106,6 +107,7 @@ class ResistanceCoupGameHandler:
                  
                  
             self._play_agents.append(PlayAgentFactory.create_agent(self._player_names[i]))
+            self._challenge_agents.append(ChallengeAgentFactory.create_agent(self._player_names[i]))
             print(f"   Created AI agents for : {self._player_names[i]}")
         print(self._play_agents)
 
@@ -194,6 +196,10 @@ class ResistanceCoupGameHandler:
             if not player.cards and player.is_active:
                 player.is_active = False
                 self._give_coin_to_treasury(player, player.coins)
+                del_id = self._knowledges[ind].player.id
+                self._knowledges.pop(ind)
+                for i in self._knowledges:
+                    self._knowledges[i].players.pop(del_id)
 
                 return player
         return None

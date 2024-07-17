@@ -95,6 +95,7 @@ class AIPlayer(BasePlayer):
         """Choose whether to challenge the current player"""
 
         # 20% chance of challenging
+        
         return random.randint(0, 4) == 0
 
     def determine_counter(self, player: BasePlayer) -> bool:
