@@ -99,8 +99,14 @@ class AIPlayer(BasePlayer):
         result = challengeAgent.get_result(inputs_challenge)
         print(type(result["agent_out"]))
         print(result["agent_out"])
-        
-        return random.randint(0, 4) == 0
+        agent_out_str = result["agent_out"]
+
+        # Convert the string to a dictionary
+        agent_out_dict = json.loads(agent_out_str)
+
+        # Get the value of 'challenge'
+        challenge_value = agent_out_dict["challenge"]
+        return challenge_value
 
     def determine_counter(self, player: BasePlayer) -> bool:
         """Choose whether to counter the current player's action"""
