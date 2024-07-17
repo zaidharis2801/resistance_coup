@@ -25,9 +25,7 @@ class AIPlayer(BasePlayer):
             "Exchange": ExchangeAction()
         }
         available_actions_strings = [str(action) for action in available_actions]
-        print("$"*80)
-        print(available_actions_strings)
-        print(available_actions)
+      
 
         print_text(f"[bold magenta]{self}[/] is thinking...", with_markup=True)
         rational_knowledge_dict_str = json.dumps(knowledgebase.to_dict())
@@ -64,20 +62,14 @@ class AIPlayer(BasePlayer):
         # Pick any other random choice (might be a bluff)
         
         # target_action  = random.choice(available_actions)
-        print("#"*80)
-        print(output_dict)
+     
         target_player = None
        
             
         if target_action.requires_target:
             if traget != "":
                 for i in range(len(players_except_self)):
-                    print("@"*80)
-                    print(players_except_self)
-                    print(type(players_except_self))
-                    print(type(players_except_self[i]))
-                    print(players_except_self[i])
-                    print(players_except_self[i]["id"])
+                    
                     if players_except_self[i]["id"] == traget:
                         target_player = other_players[i]
             else:

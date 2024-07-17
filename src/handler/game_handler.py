@@ -109,7 +109,7 @@ class ResistanceCoupGameHandler:
             self._play_agents.append(PlayAgentFactory.create_agent(self._player_names[i]))
             self._challenge_agents.append(ChallengeAgentFactory.create_agent(self._player_names[i]))
             print(f"   Created AI agents for : {self._player_names[i]}")
-        print(self._play_agents)
+        
 
        
         for i in range(len(self._players)):
@@ -121,7 +121,7 @@ class ResistanceCoupGameHandler:
 
             # Includes the player in the game
             self._players[i].is_active = True
-            print(card1.card_type.value)
+            
             self._knowledges.append(RationalPlayerKnowledge(
                 player=self._playerbases[i],
                 total_players=len(self._players) - 1,
@@ -129,9 +129,7 @@ class ResistanceCoupGameHandler:
                 
                 own_cards =[card1.card_type.value,card2.card_type.value]
     ))
-        for k in self._knowledges:
-            print("**"*80)
-            print(k)
+       
        
 
         
@@ -359,10 +357,7 @@ class ResistanceCoupGameHandler:
     }
         
         players_without_current = self._players_without_player(self.current_player)
-        print(self.current_player)
-
-        print("--"*60)
-        print(self._current_player_index)
+      
          
         # Choose an action to perform
         target_action, target_player = self._action_phase(players_without_current,self._knowledges[self._current_player_index],self._play_agents[self._current_player_index])
@@ -458,8 +453,7 @@ class ResistanceCoupGameHandler:
         if target_action.action_type in [ActionType.income, ActionType.foreign_aid, ActionType.tax]:
             move_dict["coins_change"] = f"{self.current_player.coins}"
         
-        print("="*80)
-        print(move_dict)
+    
        
         # No winner yet
         
@@ -483,7 +477,7 @@ class ResistanceCoupGameHandler:
                 # print(self._knowledges[i])
         
 
-        print("="*80)
+      
 
         
       
