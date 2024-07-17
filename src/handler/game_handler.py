@@ -1,11 +1,14 @@
 import random
 from enum import Enum
 from typing import List, Optional, Tuple, Union
-from src.agents.dad.play_dad import PlayDadAgent
-from src.agents.mom.play_mom import PlayMomAgent
 import time
 import json
 import names
+from tqdm import tqdm
+from dotenv import load_dotenv
+import os
+import copy
+
 from src.models.state.game_state import PlayerState 
 from src.models.action import Action, ActionType, CounterAction, get_counter_action
 from src.models.card import Card, build_deck
@@ -14,11 +17,10 @@ from src.models.players.base import BasePlayer
 from src.models.players.human import HumanPlayer
 from src.models.mymodels.playerbase import PlayerBase
 from src.models.mymodels.rationalplayerknowledge import RationalPlayerKnowledge
-from tqdm import tqdm
 
-from dotenv import load_dotenv
-import os
-import copy
+from src.agents.factory.playFactory import PlayAgentFactory
+
+
 # Load environment variables from .env file
 from src.utils.game_state import generate_players_table, generate_state_panel
 from src.utils.print import (
@@ -55,8 +57,7 @@ class ResistanceCoupGameHandler:
         self._number_of_players = number_of_players
        
         # Set up players
-        self._play_agents = []
-        self._play_agents.append(PlayMomAgent())
+        
 
         mom = PlayerBase(
                                 id="Player0",
@@ -95,9 +96,20 @@ class ResistanceCoupGameHandler:
         self._treasury = 50 - 2 * len(self._players)
         
         num_agents = 5
-        for i in tqdm(range(num_agents), desc="Creating AI LangGraph Agents"):
-                 time.sleep(1)
-                 print(f"Iteration {i}: Done")
+        self._play_agents = []
+        self._block_agents = []
+        self._challenge_agents =[]
+
+        self._player_names=["Dad","Mom"]
+        
+        for i in tqdm(range(len(self._player_names)), desc="Creating AI LangGraph Agents"):
+                 
+                 
+            self._play_agents.append(PlayAgentFactory.create_agent(self._player_names[i]))
+            print(f"   Created AI agents for : {self._player_names[i]}")
+        print(self._play_agents)
+
+       
         for i in range(len(self._players)):
             card1=self._deck.pop()
             card2=self._deck.pop()
