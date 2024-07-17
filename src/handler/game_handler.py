@@ -123,7 +123,7 @@ class ResistanceCoupGameHandler:
             self._knowledges.append(RationalPlayerKnowledge(
                 player=self._playerbases[i],
                 total_players=len(self._players) - 1,
-                players=[self._playerbases[j] for j in range(len(self._playerbases)) if j != i],
+                players=[self._playerbases[j] for j in range(len(self._playerbases)) ],
                 
                 own_cards =[card1.card_type.value,card2.card_type.value]
     ))
@@ -338,8 +338,8 @@ class ResistanceCoupGameHandler:
 
     def handle_turn(self) -> bool:
         move_dict = {
-        # "player_id": "Player"+str(self._current_player_index),
-        "player_id": "Player1",
+       "player_id": "Player"+str(self._current_player_index),
+        # "player_id": "Player1",
         "action": None,
         "target_id": None,
         "challenge_result": None,
@@ -371,7 +371,7 @@ class ResistanceCoupGameHandler:
         # print(type(out["agent_out"]))
         # output_dict = json.loads(out["agent_out"])
         
-        input("buffer: ")
+        
 
         move_dict["action"] = str(target_action.action_type.value)
         if target_player:
@@ -450,37 +450,48 @@ class ResistanceCoupGameHandler:
             return True
         if target_action.action_type in [ActionType.income, ActionType.foreign_aid, ActionType.tax]:
             move_dict["coins_change"] = f"{self.current_player.coins}"
-        self._next_player()
+        
         print("="*80)
         print(move_dict)
        
         # No winner yet
-        test = copy.deepcopy(self._knowledges[0])
-        self._knowledges[0].update_after_move(move_dict,True)
-
-        print(test)
+        
+        for i in range(len(self._knowledges)):
+            if i ==self._current_player_index:
+                # print("^"*80)
+                # print(self._knowledges[i])
+                self._knowledges[i].update_after_move(move_dict,True)
+                # print("^"*80)
+                # print(self._knowledges[i])
+                # print("^"*80)
+            else:
+                # print(self._knowledges[i])
+                self._knowledges[i].update_after_move(move_dict,False)
+                # print("^"*80)
+                # print(self._knowledges[i])
+        
 
         print("="*80)
 
-        print(self._knowledges[0])
+        
       
+        self._next_player()
+        # mom = PlayerBase(id="P1", name="Mom", coins=2, prompt_str="Mom is a gullible and innocent player, often easily convinced by others.", details="Mom is known for her trusting nature and tendency to believe in the good of others.", tags=["gullible", "innocent"], numberofcards=2, alive=True, probability_to_bluff=0.1, current_quote="I don't think you should challenge me on this!")
 
-        mom = PlayerBase(id="P1", name="Mom", coins=2, prompt_str="Mom is a gullible and innocent player, often easily convinced by others.", details="Mom is known for her trusting nature and tendency to believe in the good of others.", tags=["gullible", "innocent"], numberofcards=2, alive=True, probability_to_bluff=0.1, current_quote="I don't think you should challenge me on this!")
-
-        dad = PlayerBase(id="P2", name="Dad", coins=2, prompt_str="Dad is a charismatic and charming player, who enjoys the art of persuasion. His bluffs are incredibly convincing, making it difficult for others to discern his true intentions. He thrives on the challenge of outwitting his opponents through deception and psychological tactics.", details="Dad has an extensive understanding of game dynamics and psychology, frequently studying bluffing techniques and tactics, making him a master of misinformation. His preferred cards are Duke and Assassin, and his favorite actions are claiming to be Duke or Assassin, challenging other players' claims, and taking risky actions based on bluffs.", tags=["charismatic", "charming", "persuasive"], numberofcards=2, alive=True, probability_to_bluff=0.9, current_quote="I assure you, I'm the Duke. Anyone who doubts me will regret it.")
+        # dad = PlayerBase(id="P2", name="Dad", coins=2, prompt_str="Dad is a charismatic and charming player, who enjoys the art of persuasion. His bluffs are incredibly convincing, making it difficult for others to discern his true intentions. He thrives on the challenge of outwitting his opponents through deception and psychological tactics.", details="Dad has an extensive understanding of game dynamics and psychology, frequently studying bluffing techniques and tactics, making him a master of misinformation. His preferred cards are Duke and Assassin, and his favorite actions are claiming to be Duke or Assassin, challenging other players' claims, and taking risky actions based on bluffs.", tags=["charismatic", "charming", "persuasive"], numberofcards=2, alive=True, probability_to_bluff=0.9, current_quote="I assure you, I'm the Duke. Anyone who doubts me will regret it.")
 
 
-        own_cards = ['Duke', 'Assassin']
-        rational_knowledge = RationalPlayerKnowledge(player=dad, total_players=3, players=[mom], own_cards=own_cards)
+        # own_cards = ['Duke', 'Assassin']
+        # rational_knowledge = RationalPlayerKnowledge(player=dad, total_players=3, players=[mom], own_cards=own_cards)
 
-        rational_knowledge_dict_str = json.dumps(rational_knowledge.to_dict())
+        # rational_knowledge_dict_str = json.dumps(rational_knowledge.to_dict())
 
-        inputs_play = {
-            "rational_knowledge": rational_knowledge_dict_str,
-            "intermediate_steps": []
-        }
-        out = self._play_agents[0].get_result(inputs_play)
-        print(out["agent_out"])
+        # inputs_play = {
+        #     "rational_knowledge": rational_knowledge_dict_str,
+        #     "intermediate_steps": []
+        # }
+        # out = self._play_agents[0].get_result(inputs_play)
+        # print(out["agent_out"])
         hi= input("buffer: ")
         return False
 

@@ -35,7 +35,10 @@ class AIPlayer(BasePlayer):
             "Steal": StealAction(),
             "Exchange": ExchangeAction()
         }
+        play = output_dict.get("play")
+        
 
+        target_action = action_map.get(play, random.choice(available_actions))
         
         
         # Coup is only option
@@ -44,11 +47,10 @@ class AIPlayer(BasePlayer):
             return available_actions[0], player
 
         # Pick any other random choice (might be a bluff)
-        play = output_dict.get("play")
-        target_action = action_map.get(play, random.choice(available_actions))
-
-        print("3"*80)
-        print((play,target_action))
+        
+        # target_action  = random.choice(available_actions)
+        print("#"*80)
+        print(output_dict)
         target_player = None
 
         if target_action.requires_target:

@@ -111,10 +111,10 @@ class PlayDadAgent:
         rational_knowledge = json.loads(rational_knowledge)
         card_counts = rational_knowledge.get("card_counts", {})
         plays = [
-            "Income",
-            "Foreign Aid",
-            "Swap",
-            "Tax",
+            # "Income",
+            # "Foreign Aid",
+            # "Swap",
+            # "Tax",
             "Coup",
             "Assassinate",
             "Steal"
