@@ -202,10 +202,10 @@ class ResistanceCoupGameHandler:
         return sum(player.is_active for player in self._players) == 1
 
     def _action_phase(
-        self, players_without_current: list[BasePlayer]
+        self, players_without_current: list[BasePlayer],knowledgebase,play_agent
     ) -> Tuple[Action, Optional[BasePlayer]]:
         # Player chooses action
-        target_action, target_player = self.current_player.choose_action(players_without_current)
+        target_action, target_player = self.current_player.choose_action(players_without_current,knowledgebase,play_agent)
 
         print_text(
             build_action_report_string(
