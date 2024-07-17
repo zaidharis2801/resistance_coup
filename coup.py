@@ -2,8 +2,12 @@ import sys
 
 from rich.panel import Panel
 from rich.text import Text
-
+from dotenv import load_dotenv
+import os
 from src.handler.game_handler import ResistanceCoupGameHandler
+from src.agents.dad.play_dad import PlayDadAgent
+
+import json
 from src.utils.print import (
     console,
     print_blank,
@@ -16,6 +20,10 @@ console.clear()
 
 
 def main():
+    
+
+# Load environment variables from .env file
+    load_dotenv('.env')
     text = Text(
         """
         In the not too distant future, the government is run for profit by a new 'royal class' of multinational CEOs.
@@ -45,12 +53,13 @@ def main():
     console.print(panel)
 
     console.print()
-    player_name = print_prompt("What is your name, player?")
-    handler = ResistanceCoupGameHandler(player_name, 5)
+    # player_name = print_prompt("What is your name, player?")
+    player_name ="zaid"
+    handler = ResistanceCoupGameHandler(player_name, 2)
 
-    console.print()
-    game_ready = print_confirm("Ready to start?")
-
+    # console.print()
+    # game_ready = print_confirm("Ready to start?")
+    game_ready = True
     # Play the game
     while game_ready:
         handler.setup_game()

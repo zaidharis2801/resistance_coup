@@ -26,7 +26,7 @@ class BasePlayer(BaseModel, ABC):
     is_active: bool = False
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.name, self.cards, self.coins,self.is_active,self.is_ai}"
 
     def reset_player(self):
         self.coins = 0

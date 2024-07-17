@@ -1,14 +1,25 @@
 import random
 from enum import Enum
 from typing import List, Optional, Tuple, Union
-
+from src.agents.dad.play_dad import PlayDadAgent
+from src.agents.mom.play_mom import PlayMomAgent
+import time
+import json
 import names
-
+from src.models.state.game_state import PlayerState 
 from src.models.action import Action, ActionType, CounterAction, get_counter_action
 from src.models.card import Card, build_deck
 from src.models.players.ai import AIPlayer
 from src.models.players.base import BasePlayer
 from src.models.players.human import HumanPlayer
+from src.models.mymodels.playerbase import PlayerBase
+from src.models.mymodels.rationalplayerknowledge import RationalPlayerKnowledge
+from tqdm import tqdm
+
+from dotenv import load_dotenv
+import os
+import copy
+# Load environment variables from .env file
 from src.utils.game_state import generate_players_table, generate_state_panel
 from src.utils.print import (
     build_action_report_string,
@@ -33,24 +44,85 @@ class ResistanceCoupGameHandler:
     _deck: List[Card] = []
     _number_of_players: int = 0
     _treasury: int = 0
+    _playerbases =[]
+    _knowledges =[]
+    _player_states =[]
+    
+
 
     def __init__(self, player_name: str, number_of_players: int):
+        
         self._number_of_players = number_of_players
-
+       
         # Set up players
-        self._players.append(HumanPlayer(name=player_name))
+        self._play_agents = []
+        self._play_agents.append(PlayMomAgent())
 
-        unique_names = set()
-        for i in range(number_of_players - 1):
-            gender = random.choice(["male", "female"])
+        mom = PlayerBase(
+                                id="Player0",
+                                name="Mom",
+                                coins=2,
+                                prompt_str="Mom is a gullible and innocent player, often easily convinced by others.",
+                                details="Mom is known for her trusting nature and tendency to believe in the good of others.",
+                                tags=["gullible", "innocent"],
+                                numberofcards=2,
+                                alive=True,
+                                probability_to_bluff=0.1,
+                                current_quote="I don't think you should challenge me on this!"
+)       
+        dad = PlayerBase(
+    id="Player1",
+    name="Dad",
+    coins=2,
+    prompt_str="Dad is a charismatic and charming player, who enjoys the art of persuasion. His bluffs are incredibly convincing, making it difficult for others to discern his true intentions. He thrives on the challenge of outwitting his opponents through deception and psychological tactics.",
+    details="Dad has an extensive understanding of game dynamics and psychology, frequently studying bluffing techniques and tactics, making him a master of misinformation. His preferred cards are Duke and Assassin, and his favorite actions are claiming to be Duke or Assassin, challenging other players' claims, and taking risky actions based on bluffs.",
+    tags=["charismatic", "charming", "persuasive"],
+    numberofcards=2,
+    alive=True,
+    probability_to_bluff=0.9,
+    current_quote="I assure you, I'm the Duke. Anyone who doubts me will regret it."
+)
 
-            ai_name = names.get_first_name(gender=gender)
-            while ai_name in unique_names:
-                ai_name = names.get_first_name(gender=gender)
+        self._players.append(AIPlayer(name="Mom"))
+        self._players.append(AIPlayer(name="Dad"))
 
-            unique_names.add(ai_name)
+        self._playerbases.append(mom)
+        self._playerbases.append(dad)
 
-            self._players.append(AIPlayer(name=ai_name))
+        self._deck = build_deck()
+        self._shuffle_deck()
+
+        self._treasury = 50 - 2 * len(self._players)
+        
+        num_agents = 5
+        for i in tqdm(range(num_agents), desc="Creating AI LangGraph Agents"):
+                 time.sleep(1)
+                 print(f"Iteration {i}: Done")
+        for i in range(len(self._players)):
+            card1=self._deck.pop()
+            card2=self._deck.pop()
+            self._players[i].cards.append(card1)
+            self._players[i].cards.append(card2)
+            self._players[i].coins = 2
+
+            # Includes the player in the game
+            self._players[i].is_active = True
+            print(card1.card_type.value)
+            self._knowledges.append(RationalPlayerKnowledge(
+                player=self._playerbases[i],
+                total_players=len(self._players) - 1,
+                players=[self._playerbases[j] for j in range(len(self._playerbases)) if j != i],
+                
+                own_cards =[card1.card_type.value,card2.card_type.value]
+    ))
+        for k in self._knowledges:
+            print("**"*80)
+            print(k)
+       
+
+        
+
+        
 
     @property
     def current_player(self) -> BasePlayer:
@@ -77,23 +149,7 @@ class ResistanceCoupGameHandler:
         random.shuffle(self._deck)
 
     def setup_game(self) -> None:
-        self._deck = build_deck()
-        self._shuffle_deck()
-
-        self._treasury = 50 - 2 * len(self._players)
-
-        for player in self._players:
-            player.reset_player()
-
-            # Deal 2 cards to each player
-            player.cards.append(self._deck.pop())
-            player.cards.append(self._deck.pop())
-
-            # Gives each player 2 coins
-            player.coins = 2
-
-            # Includes the player in the game
-            player.is_active = True
+        
 
         # Random starting player
         self._current_player_index = random.randint(0, self._number_of_players - 1)
@@ -269,12 +325,33 @@ class ResistanceCoupGameHandler:
                 self._deck.append(second_card)
 
     def handle_turn(self) -> bool:
+        move_dict = {
+        # "player_id": "Player"+str(self._current_player_index),
+        "player_id": "Player1",
+        "action": None,
+        "target_id": None,
+        "challenge_result": None,
+        "counter_player_id": None,
+        "counter_action": None,
+        "counter_challenge_result": None,
+        "revealed_card": None,
+        "lost_card": None,
+        "coins_change": 0
+    }
+        
         players_without_current = self._players_without_player(self.current_player)
+        print(self.current_player)
 
+        print("--"*60)
+        print(self._current_player_index)
+         
         # Choose an action to perform
         target_action, target_player = self._action_phase(players_without_current)
 
-        # Opportunity to challenge action
+
+        move_dict["action"] = str(target_action.action_type.value)
+        if target_player:
+            move_dict["target_id"] = target_player.name 
         challenge_result = ChallengeResult.no_challenge
         if target_action.can_be_challenged:
             challenge_result = self._challenge_phase(
@@ -282,6 +359,7 @@ class ResistanceCoupGameHandler:
                 player_being_challenged=self.current_player,
                 action_being_challenged=target_action,
             )
+            move_dict["challenge_result"] = challenge_result.name
 
         if challenge_result == ChallengeResult.challenge_succeeded:
             # Challenge succeeded and the action does not take place
@@ -289,6 +367,7 @@ class ResistanceCoupGameHandler:
         elif challenge_result == ChallengeResult.challenge_failed:
             # Challenge failed and the action is still resolved
             self._execute_action(target_action, target_player)
+
         elif challenge_result == ChallengeResult.no_challenge:
             # Action can't be countered
             if not target_action.can_be_countered:
@@ -299,6 +378,10 @@ class ResistanceCoupGameHandler:
                 countering_player, counter = self._counter_phase(
                     players_without_current, target_action
                 )
+                if countering_player:
+                    move_dict["counter_player_id"] = countering_player.name
+                if counter:
+                    move_dict["counter_action"] = str(counter.counter_type.value)
 
                 # Opportunity to challenge counter
                 counter_challenge_result = ChallengeResult.no_challenge
@@ -311,6 +394,7 @@ class ResistanceCoupGameHandler:
                         player_being_challenged=countering_player,
                         action_being_challenged=counter,
                     )
+                    move_dict["counter_challenge_result"] = counter_challenge_result.name
 
                 # Successfully countered and counter not challenged
                 if counter and counter_challenge_result in [
@@ -340,8 +424,39 @@ class ResistanceCoupGameHandler:
                 with_markup=True,
             )
             return True
-
+        if target_action.action_type in [ActionType.income, ActionType.foreign_aid, ActionType.tax]:
+            move_dict["coins_change"] = f"{self.current_player.coins}"
         self._next_player()
-
+        print("="*80)
+        print(move_dict)
+       
         # No winner yet
+        test = copy.deepcopy(self._knowledges[0])
+        self._knowledges[0].update_after_move(move_dict,True)
+
+        print(test)
+
+        print("="*80)
+
+        print(self._knowledges[0])
+      
+
+        mom = PlayerBase(id="P1", name="Mom", coins=2, prompt_str="Mom is a gullible and innocent player, often easily convinced by others.", details="Mom is known for her trusting nature and tendency to believe in the good of others.", tags=["gullible", "innocent"], numberofcards=2, alive=True, probability_to_bluff=0.1, current_quote="I don't think you should challenge me on this!")
+
+        dad = PlayerBase(id="P2", name="Dad", coins=2, prompt_str="Dad is a charismatic and charming player, who enjoys the art of persuasion. His bluffs are incredibly convincing, making it difficult for others to discern his true intentions. He thrives on the challenge of outwitting his opponents through deception and psychological tactics.", details="Dad has an extensive understanding of game dynamics and psychology, frequently studying bluffing techniques and tactics, making him a master of misinformation. His preferred cards are Duke and Assassin, and his favorite actions are claiming to be Duke or Assassin, challenging other players' claims, and taking risky actions based on bluffs.", tags=["charismatic", "charming", "persuasive"], numberofcards=2, alive=True, probability_to_bluff=0.9, current_quote="I assure you, I'm the Duke. Anyone who doubts me will regret it.")
+
+
+        own_cards = ['Duke', 'Assassin']
+        rational_knowledge = RationalPlayerKnowledge(player=dad, total_players=3, players=[mom], own_cards=own_cards)
+
+        rational_knowledge_dict_str = json.dumps(rational_knowledge.to_dict())
+
+        inputs_play = {
+            "rational_knowledge": rational_knowledge_dict_str,
+            "intermediate_steps": []
+        }
+        out = self._play_agents[0].get_result(inputs_play)
+        print(out["agent_out"])
+        hi= input("buffer: ")
         return False
+
