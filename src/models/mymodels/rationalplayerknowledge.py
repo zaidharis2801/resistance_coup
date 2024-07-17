@@ -18,6 +18,7 @@ class RationalPlayerKnowledge:
             'Contessa': 3
         }
         self.coins = {p.id: 2 for p in players}  # Assuming starting coins for all players is 2
+        self.players_except_self = [p for p in players if p.id != player.id]
 
         for card in own_cards:
             self.card_counts[card] -= 1
