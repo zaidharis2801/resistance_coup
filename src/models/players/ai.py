@@ -25,8 +25,9 @@ class AIPlayer(BasePlayer):
             "Exchange": ExchangeAction()
         }
         available_actions_strings = [str(action) for action in available_actions]
-
-
+        print("$"*80)
+        print(available_actions_strings)
+        print(available_actions)
 
         print_text(f"[bold magenta]{self}[/] is thinking...", with_markup=True)
         rational_knowledge_dict_str = json.dumps(knowledgebase.to_dict())
@@ -49,8 +50,7 @@ class AIPlayer(BasePlayer):
         # Coup is only option
         if len(available_actions) == 1:
             player = random.choice(other_players)
-            print("here"*29)
-            print(available_actions_strings)
+            
             return available_actions[0], player
         
 
