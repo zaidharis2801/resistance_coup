@@ -101,7 +101,7 @@ class ResistanceCoupGameHandler:
         self._block_agents = []
         self._challenge_agents =[]
 
-        self._player_names=["Dad","Mom"]
+        self._player_names=["Mom","Dad"]
         
         for i in tqdm(range(len(self._player_names)), desc="Creating AI LangGraph Agents"):
                  
@@ -164,7 +164,7 @@ class ResistanceCoupGameHandler:
         
 
         # Random starting player
-        self._current_player_index = 0
+        self._current_player_index = 1
 
     def _swap_card(self, player: BasePlayer, card: Card) -> None:
         self._deck.append(card)
