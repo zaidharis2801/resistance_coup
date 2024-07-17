@@ -164,7 +164,7 @@ class ResistanceCoupGameHandler:
         
 
         # Random starting player
-        self._current_player_index = random.randint(0, self._number_of_players - 1)
+        self._current_player_index = 0
 
     def _swap_card(self, player: BasePlayer, card: Card) -> None:
         self._deck.append(card)
