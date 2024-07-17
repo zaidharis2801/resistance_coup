@@ -36,7 +36,7 @@ class AIPlayer(BasePlayer):
             "Exchange": ExchangeAction()
         }
         play = output_dict.get("play")
-        
+        traget  = output_dict.get('attack_on')
 
         target_action = action_map.get(play, random.choice(available_actions))
         
@@ -56,7 +56,12 @@ class AIPlayer(BasePlayer):
             print(p)
             print("@@"*80)
         if target_action.requires_target:
-            target_player = random.choice(other_players)
+            if traget != "":
+                for player in other_players:
+                    if player.name == traget:
+                        target_player = player
+            else:
+                target_player = random.choice(other_players)
 
         # Make sure we have a valid action/player combination
         while not self._validate_action(target_action, target_player):
