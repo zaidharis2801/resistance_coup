@@ -24,15 +24,15 @@ class AIPlayer(BasePlayer):
             "Steal": StealAction(),
             "Exchange": ExchangeAction()
         }
-        reverse_action_map = {v: k for k, v in action_map.items()}
-        available_actions2 = [reverse_action_map[type(action)] for action in available_actions]
+        available_actions_strings = [str(action) for action in available_actions]
+
 
 
         print_text(f"[bold magenta]{self}[/] is thinking...", with_markup=True)
         rational_knowledge_dict_str = json.dumps(knowledgebase.to_dict())
         inputs_play2 = {
             "rational_knowledge": rational_knowledge_dict_str,
-            "avalaible_actions"  : available_actions2,
+            "avalaible_actions"  : available_actions_strings,
             "intermediate_steps": []
         }
 
