@@ -460,13 +460,18 @@ class ResistanceCoupGameHandler:
             if i ==self._current_player_index:
                 # print("^"*80)
                 # print(self._knowledges[i])
+                updated_cards = [str(card) for card in self._players[i].cards]
+
                 self._knowledges[i].update_after_move(move_dict,True)
+                self._knowledges[i].own_cards = updated_cards
                 # print("^"*80)
                 # print(self._knowledges[i])
                 # print("^"*80)
             else:
                 # print(self._knowledges[i])
+                updated_cards = [str(card) for card in self._players[i].cards]
                 self._knowledges[i].update_after_move(move_dict,False)
+                self._knowledges[i].own_cards = updated_cards
                 # print("^"*80)
                 # print(self._knowledges[i])
         
