@@ -247,10 +247,11 @@ class ResistanceCoupGameHandler:
         other_players: list[BasePlayer],
         player_being_challenged: BasePlayer,
         action_being_challenged: Union[Action, CounterAction],
+        
     ) -> ChallengeResult:
         # Every player can choose to challenge
-        for challenger in other_players:
-            should_challenge = challenger.determine_challenge(player_being_challenged)
+        for index,challenger in enumerate(other_players):
+            should_challenge = challenger.determine_challenge(self._playerbases[self._current_player_index],str(action_being_challenged),self._knowledges[index],self._challenge_agents[index])
             if should_challenge:
                 if challenger.is_ai:
                     print_text(f"{challenger} is challenging {player_being_challenged}!")

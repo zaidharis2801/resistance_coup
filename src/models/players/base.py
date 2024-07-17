@@ -72,7 +72,8 @@ class BasePlayer(BaseModel, ABC):
         pass
 
     @abstractmethod
-    def determine_challenge(self, player: "BasePlayer") -> bool:
+    def determine_challenge(self, player,claim,knowledgebase,challengeAgent) -> bool:
+        #self._playerbases[self._current_player_index],str(action_being_challenged),self._knowledges[index],challengeAgent
         """Choose whether to challenge the current player"""
         pass
 

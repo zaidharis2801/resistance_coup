@@ -91,10 +91,20 @@ class AIPlayer(BasePlayer):
 
         return target_action, target_player
 
-    def determine_challenge(self, player: BasePlayer) -> bool:
+    def determine_challenge(self, player,claim,knowledgebase,challengeAgent) -> bool:
         """Choose whether to challenge the current player"""
 
         # 20% chance of challenging
+        inputs_challenge = {
+    "rational_knowledge": json.dumps(knowledgebase.to_dict()),
+    "claimant": json.dumps(player.to_dict()),
+    "claim": claim,
+    "intermediate_steps": []
+}       
+        
+        print("%"*80)
+        result = challengeAgent.get_result(inputs_challenge)
+        print(result)
         
         return random.randint(0, 4) == 0
 
