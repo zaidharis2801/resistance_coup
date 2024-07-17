@@ -140,7 +140,7 @@ class PlayMomAgent:
         if chosen_play in plays2:
             attack_on = random.choice(players_except_self)["id"]
             attack_on_name = rational_knowledge["players"]["Player" + str(attack_on)]["id"]
-        return chosen_play, attack_on,self_player_id 
+        return chosen_play, attack_on
 
     @staticmethod
     @tool("final_answer_play")
