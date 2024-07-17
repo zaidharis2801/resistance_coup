@@ -368,6 +368,13 @@ class ResistanceCoupGameHandler:
 
         out = self._play_agents[self._current_player_index].get_result(inputs_play2)
         print(out["agent_out"])
+        print(type(out["agent_out"]))
+        output_dict = json.loads(out["agent_out"])
+        print(output_dict)
+        print(output_dict["play"])  # Output: Swap
+        print(output_dict["attack_on"])  # Output: 
+        print(output_dict["quote"])
+
         input("buffer: ")
 
         move_dict["action"] = str(target_action.action_type.value)
