@@ -129,7 +129,7 @@ class PlayDadAgent:
         attack_on_name = ""
         if chosen_play in plays2:
             attack_on = random.randint(1, len(rational_knowledge["players"]))
-            attack_on_name = rational_knowledge["players"]["P" + str(attack_on)]["name"]
+            attack_on_name = rational_knowledge["players"]["Player" + str(attack_on)]["name"]
         return chosen_play, attack_on_name
 
     @staticmethod
