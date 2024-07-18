@@ -85,7 +85,7 @@ def print_confirm(content: str) -> bool:
 def build_action_report_string(
     player: BasePlayer, action: Action, target_player: BasePlayer
 ) -> str:
-    action_report_string = f"[bold magenta]{player}[/] chose to "
+    action_report_string = f"[bold magenta]{player.name}[/] chose to "
     match action.action_type:
         case ActionType.income:
             action_report_string += "take income."

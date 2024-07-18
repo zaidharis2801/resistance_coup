@@ -95,10 +95,9 @@ class AIPlayer(BasePlayer):
     "intermediate_steps": []
 }       
         
-        print("%"*80)
+        
         result = challengeAgent.get_result(inputs_challenge)
-        print(type(result["agent_out"]))
-        print(result["agent_out"])
+        
         agent_out_str = result["agent_out"]
 
         # Convert the string to a dictionary
@@ -106,10 +105,7 @@ class AIPlayer(BasePlayer):
 
         # Get the value of 'challenge'
         challenge_value = agent_out_dict["challenge"]
-        print("!"*80)
-        print(challenge_value)
-        print(challenge_value(type))
-        print(bool(challenge_value))
+        
         return challenge_value
 
     def determine_counter(self, player: BasePlayer) -> bool:
