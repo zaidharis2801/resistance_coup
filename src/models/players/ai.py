@@ -130,6 +130,20 @@ class AIPlayer(BasePlayer):
 
         # Get the value of 'challenge'
         challenge_value = agent_out_dict["challenge"]
+        quote = agent_out_dict.get("quote")
+        player_name =knowledgebase.player.name
+        if player_name == "Mom":
+            print_text(f"[bold magenta]{player_name}[/]: {quote}", with_markup=True)
+        elif player_name == "Dad":
+            print_text(f"[bold cyan]{player_name}[/]: {quote}", with_markup=True)
+        elif player_name == "Cousin Sam":
+            print_text(f"[bold green]{player_name}[/]: {quote}", with_markup=True)
+        elif player_name == "Uncle Peter":
+            print_text(f"[bold yellow]{player_name}[/]: {quote}", with_markup=True)
+        elif player_name == "Uncle Mike":
+            print_text(f"[bold red]{player_name}[/]: {quote}", with_markup=True)
+        else:
+            print_text(f"{player_name}: {quote}")
         
         return challenge_value
 
