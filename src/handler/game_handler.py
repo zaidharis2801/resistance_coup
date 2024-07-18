@@ -123,7 +123,7 @@ class ResistanceCoupGameHandler:
 
         self._playerbases = [mom, dad, sam, peter, mike]
 
-        self._deck = self.build_deck()
+        self._deck = build_deck()
         self._shuffle_deck()
 
         self._treasury = 50 - 2 * len(self._players)
