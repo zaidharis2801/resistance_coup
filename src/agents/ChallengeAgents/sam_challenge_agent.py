@@ -71,8 +71,8 @@ class ChallengeRandomAgent:
         Returns:
         bool: Is Cousin Sam challenging the action.
         """ 
-        print(claimant)
-        print(type(claimant))
+        # print(claimant)
+        # print(type(claimant))
         return random.choice([True, False])
 
     @staticmethod

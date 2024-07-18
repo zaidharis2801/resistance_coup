@@ -75,10 +75,10 @@ class ChallengeMomAgent:
         Returns:
         bool: Is Mom challenging the action.
         """ 
-        print(claimant)
-        print(type(claimant))
+        # print(claimant)
+        # print(type(claimant))
         if claimant == "Player1":
-            print("here")
+            # print("here")
             return random.randint(1, 100) > 20
         else:
             return random.randint(1, 100) > 80

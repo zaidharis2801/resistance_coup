@@ -82,10 +82,10 @@ class ChallengeDadAgent:
     Returns:
     bool: is {player} challenging the action.
     """ 
-        print(claimant)
-        print(type(claimant))
+        # print(claimant)
+        # print(type(claimant))
         if claimant == "Player0":
-            print("here")
+            # print("here")
             return random.randint(1,100)>80
         else:
             return random.randint(1,100)>20

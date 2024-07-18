@@ -82,8 +82,8 @@ class ChallengeUncleMikeAgent:
         Returns:
         bool: Is Uncle Mike challenging the action.
         """ 
-        print(claimant)
-        print(type(claimant))
+        # print(claimant)
+        # print(type(claimant))
 
         GSPC = yf.Ticker("^GSPC")
 
@@ -107,7 +107,7 @@ class ChallengeUncleMikeAgent:
                 # Market is bullish
                 return random.randint(1, 100) > 20
         else:
-            print("Not enough data to compare.")
+            # print("Not enough data to compare.")
             # Default to conservative action if data is not sufficient
             return random.randint(1, 100) > 50
 

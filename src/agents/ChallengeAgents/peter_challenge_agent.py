@@ -112,7 +112,7 @@ class ChallengeUnclePeterAgent:
             else:
                 return probability_of_truth < 0.6  # More aggressive if market is bullish
         else:
-            print("Not enough data to compare.")
+            # print("Not enough data to compare.")
             return probability_of_truth < 0.5  # Default action
 
     @staticmethod
