@@ -53,7 +53,7 @@ class PlayDadAgent:
             "Steal",
             "Exchange"
         ]
-        avialable_actions: {{avialable_actions}}                                       
+                                        
         Player Knowledge: {{rational_knowledge}}
 
         {{agent_scratchpad}}
