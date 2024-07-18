@@ -20,7 +20,7 @@ from src.models.mymodels.rationalplayerknowledge import RationalPlayerKnowledge
 
 from src.agents.factory.playFactory import PlayAgentFactory
 from src.agents.factory.challengeFactory import ChallengeAgentFactory
-
+from src.agents.factory.blockFactory import BlockAgentFactory
 
 # Load environment variables from .env file
 from src.utils.game_state import generate_players_table, generate_state_panel
@@ -108,6 +108,7 @@ class ResistanceCoupGameHandler:
                  
             self._play_agents.append(PlayAgentFactory.create_agent(self._player_names[i]))
             self._challenge_agents.append(ChallengeAgentFactory.create_agent(self._player_names[i]))
+            self._block_agents.append(BlockAgentFactory.create_agent(self._player_names[i]))
             print(f"   Created AI agents for : {self._player_names[i]}")
         
 

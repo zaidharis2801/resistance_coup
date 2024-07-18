@@ -11,6 +11,12 @@ python = "^3.11"
 pydantic = "^2.5.2"
 names = "^0.3.0"
 rich = "^13.7.0"
+yfinance = "^0.2.40"
+langchain = "^0.2.9"
+langchain-openai = "^0.1.17"
+langchain-core = "^0.2.21"
+langgraph = "^0.1.8"
+python-dotenv = "^1.0.1"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.3.2"
