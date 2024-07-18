@@ -113,6 +113,7 @@ class PlayDadAgent:
 
             # If no preferred actions are available, only use other actions
             print(available_actions)
+            print("="*80)
             if num_preferred == 0:
                 probabilities = [1 / num_other] * num_other
                 all_available_actions = available_other_actions
