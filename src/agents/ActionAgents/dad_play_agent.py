@@ -147,8 +147,11 @@ class PlayDadAgent:
         players_except_self = get_players_except_self(rational_knowledge, self_player_id)
 
         if chosen_play in plays2:
-            probabilities = [0.1 if player.id == "Player0" else 0.9 / (len(players_except_self) - 1) for player in players_except_self]
 
+            if len(players_except_self) > 1:
+                probabilities = [0.1 if player.id == "Player0" else 0.9 / (len(players_except_self) - 1) for player in players_except_self]
+            else:
+                probabilities = [1.0]
             print(f"Attack probabilities: {probabilities}")
 
             attack_on = random.choices(players_except_self, probabilities, k=1)[0]
