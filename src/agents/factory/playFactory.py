@@ -4,7 +4,7 @@ from src.agents.ActionAgents.mom_play_agent import PlayMomAgent
 
 from src.agents.ActionAgents.peter_play_agent import PlayLogicAgent
 from src.agents.ActionAgents.sam_play_agent import PlayRandomAgent
-
+from src.agents.ActionAgents.twin_play_agent import PlayTwinAgent
 
 
 
@@ -22,5 +22,7 @@ class PlayAgentFactory:
             return PlayLogicAgent()
         elif agent_type == 'Random':
             return PlayRandomAgent()
+        elif agent_type == 'Twins':
+            return PlayTwinAgent()
         else:
             raise ValueError(f"Unknown agent type: {agent_type}")

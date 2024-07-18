@@ -3,6 +3,7 @@ from src.agents.ChallengeAgents.mom_challenge_agent import ChallengeMomAgent
 from src.agents.ChallengeAgents.sam_challenge_agent import ChallengeRandomAgent
 from src.agents.ChallengeAgents.mike_challenge_agent import ChallengeUncleMikeAgent
 from src.agents.ChallengeAgents.peter_challenge_agent import ChallengeUnclePeterAgent
+from src.agents.ChallengeAgents.twin_challenge_agent import ChallengeTwinAgent
 
 class ChallengeAgentFactory:
     @staticmethod
@@ -17,5 +18,7 @@ class ChallengeAgentFactory:
             return ChallengeUncleMikeAgent()
         elif agent_type == 'UnclePeter':
             return ChallengeUnclePeterAgent()
+        elif agent_type == 'Twins':
+            return ChallengeTwinAgent()
         else:
             raise ValueError(f"Unknown agent type: {agent_type}")

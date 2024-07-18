@@ -120,15 +120,16 @@ class ResistanceCoupGameHandler:
             probability_to_bluff=0.3,
             current_quote="The market is my guide!"
         )
+        twins = PlayerBase( id="Player5", name="Twins Tom and Jerry", coins=2, prompt_str="Twins Tom and Jerry combine aggressive and cautious strategies.", details="Tom is aggressive and bold, thriving on high-risk strategies. He has a deep understanding of offensive tactics. Jerry is cautious and strategic, focusing on long-term survival. He is well-versed in defensive strategies and risk management.",   tags=["aggressive", "bold", "cautious", "strategic"],numberofcards=2,  alive=True, probability_to_bluff=0.5,  current_quote="Together, we'll outsmart everyone!")
 
-        self._playerbases = [mom, dad, sam, peter, mike]
+        self._playerbases = [mom, dad, sam, peter, mike,twins]
 
         self._deck = build_deck()
         self._shuffle_deck()
 
         self._treasury = 50 - 2 * len(self._players)
 
-        self._player_names = ["Mom", "Dad", "Random", "UncleMike", "UnclePeter"]
+        self._player_names = ["Mom", "Dad", "Random", "UncleMike", "UnclePeter","Twins"]
 
         self._play_agents = []
         self._challenge_agents = []
