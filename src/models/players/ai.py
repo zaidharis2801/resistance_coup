@@ -38,7 +38,7 @@ class AIPlayer(BasePlayer):
         rational_knowledge_dict_str = json.dumps(knowledgebase.to_dict())
         inputs_play2 = {
             "rational_knowledge": rational_knowledge_dict_str,
-            "avalaible_actions"  : available_actions_strings,
+            "available"  : available_actions_strings,
             "intermediate_steps": []
         }
 
