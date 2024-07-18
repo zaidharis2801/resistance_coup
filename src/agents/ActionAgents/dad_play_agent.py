@@ -44,6 +44,16 @@ class PlayDadAgent:
         7. Swap Influence (the Ambassador): Draw two Influence cards from the deck, look at them and mix them with your current Influence card(s). Place two cards back in the deck and shuffle the deck. Can be Challenged. Cannot be Blocked.
 
         Now, simulate making a play with the following details:
+        Please forward the avable actions in this format: [
+            "Income",
+            "Foreign Aid",
+            "Coup",
+            "Tax",
+            "Assassinate",
+            "Steal",
+            "Exchange"
+        ]
+        avialable_actions: {{avialable_actions}}                                       
         Player Knowledge: {{rational_knowledge}}
 
         {{agent_scratchpad}}
