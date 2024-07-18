@@ -1,7 +1,8 @@
-from src.agents.mom.challenge_mom import ChallengeMomAgent
-from src.agents.dad.challenge_dad import ChallengeDadAgent
-
-
+from src.agents.ChallengeAgents.dad_challenge_agent import ChallengeDadAgent
+from src.agents.ChallengeAgents.mom_challenge_agent import ChallengeMomAgent
+from src.agents.ChallengeAgents.sam_challenge_agent import ChallengeRandomAgent
+from src.agents.ChallengeAgents.mike_challenge_agent import ChallengeUncleMikeAgent
+from src.agents.ChallengeAgents.peter_challenge_agent import ChallengeUnclePeterAgent
 
 class ChallengeAgentFactory:
     @staticmethod
@@ -10,6 +11,11 @@ class ChallengeAgentFactory:
             return ChallengeDadAgent()
         elif agent_type == 'Mom':
             return ChallengeMomAgent()
+        elif agent_type == 'Random':
+            return ChallengeRandomAgent()
+        elif agent_type == 'UncleMike':
+            return ChallengeUncleMikeAgent()
+        elif agent_type == 'UnclePeter':
+            return ChallengeUnclePeterAgent()
         else:
             raise ValueError(f"Unknown agent type: {agent_type}")
-

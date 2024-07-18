@@ -54,84 +54,100 @@ class ResistanceCoupGameHandler:
 
 
     def __init__(self, player_name: str, number_of_players: int):
-        
         self._number_of_players = number_of_players
-       
+        self._players = []
+        self._playerbases = []
+        self._knowledges = []
+
         # Set up players
-        
-
         mom = PlayerBase(
-                                id="Player0",
-                                name="Mom",
-                                coins=2,
-                                prompt_str="Mom is a gullible and innocent player, often easily convinced by others.",
-                                details="Mom is known for her trusting nature and tendency to believe in the good of others.",
-                                tags=["gullible", "innocent"],
-                                numberofcards=2,
-                                alive=True,
-                                probability_to_bluff=0.1,
-                                current_quote="I don't think you should challenge me on this!"
-)       
+            id="Player0",
+            name="Mom",
+            coins=2,
+            prompt_str="Mom is a gullible and innocent player, often easily convinced by others.",
+            details="Mom is known for her trusting nature and tendency to believe in the good of others.",
+            tags=["gullible", "innocent"],
+            numberofcards=2,
+            alive=True,
+            probability_to_bluff=0.1,
+            current_quote="I don't think you should challenge me on this!"
+        )
         dad = PlayerBase(
-    id="Player1",
-    name="Dad",
-    coins=2,
-    prompt_str="Dad is a charismatic and charming player, who enjoys the art of persuasion. His bluffs are incredibly convincing, making it difficult for others to discern his true intentions. He thrives on the challenge of outwitting his opponents through deception and psychological tactics.",
-    details="Dad has an extensive understanding of game dynamics and psychology, frequently studying bluffing techniques and tactics, making him a master of misinformation. His preferred cards are Duke and Assassin, and his favorite actions are claiming to be Duke or Assassin, challenging other players' claims, and taking risky actions based on bluffs.",
-    tags=["charismatic", "charming", "persuasive"],
-    numberofcards=2,
-    alive=True,
-    probability_to_bluff=0.9,
-    current_quote="I assure you, I'm the Duke. Anyone who doubts me will regret it."
-)
+            id="Player1",
+            name="Dad",
+            coins=2,
+            prompt_str="Dad is a charismatic and charming player, who enjoys the art of persuasion. His bluffs are incredibly convincing, making it difficult for others to discern his true intentions. He thrives on the challenge of outwitting his opponents through deception and psychological tactics.",
+            details="Dad has an extensive understanding of game dynamics and psychology, frequently studying bluffing techniques and tactics, making him a master of misinformation. His preferred cards are Duke and Assassin, and his favorite actions are claiming to be Duke or Assassin, challenging other players' claims, and taking risky actions based on bluffs.",
+            tags=["charismatic", "charming", "persuasive"],
+            numberofcards=2,
+            alive=True,
+            probability_to_bluff=0.9,
+            current_quote="I assure you, I'm the Duke. Anyone who doubts me will regret it."
+        )
+        sam = PlayerBase(
+            id="Player2",
+            name="Cousin Sam",
+            coins=2,
+            prompt_str="Sam is an unpredictable and whimsical player.",
+            details="Sam enjoys the element of surprise and the chaos it brings. He finds fun in the randomness of his actions, keeping everyone on their toes.",
+            tags=["unpredictable", "whimsical"],
+            numberofcards=2,
+            alive=True,
+            probability_to_bluff=0.5,
+            current_quote="Let's see what happens if I do this!"
+        )
+        peter = PlayerBase(
+            id="Player3",
+            name="Uncle Peter",
+            coins=2,
+            prompt_str="Uncle Peter is logical and meticulous, analyzing every possible outcome before deciding on the best course of action.",
+            details="Uncle Peter has a thorough understanding of game theory and statistical analysis. He frequently studies game mechanics and probabilities, ensuring that his moves are always well-calculated.",
+            tags=["logical", "meticulous"],
+            numberofcards=2,
+            alive=True,
+            probability_to_bluff=0.2,
+            current_quote="Let's analyze this move carefully."
+        )
+        mike = PlayerBase(
+            id="Player4",
+            name="Uncle Mike",
+            coins=2,
+            prompt_str="Uncle Mike is very bold and aggressive if the S&P 500 is bullish and extremely timid when it is bearish.",
+            details="Uncle Mike's strategies are heavily influenced by the stock markets. He has a comprehensive understanding of the game and adapts his strategies based on the market conditions.",
+            tags=["bold", "aggressive", "timid"],
+            numberofcards=2,
+            alive=True,
+            probability_to_bluff=0.3,
+            current_quote="The market is my guide!"
+        )
 
-        self._players.append(AIPlayer(name="Mom"))
-        self._players.append(AIPlayer(name="Dad"))
+        self._playerbases = [mom, dad, sam, peter, mike]
 
-        self._playerbases.append(mom)
-        self._playerbases.append(dad)
-
-        self._deck = build_deck()
+        self._deck = self.build_deck()
         self._shuffle_deck()
 
         self._treasury = 50 - 2 * len(self._players)
-        
-        num_agents = 5
-        self._play_agents = []
-        self._block_agents = []
-        self._challenge_agents =[]
 
-        self._player_names=["Mom","Dad"]
-        
-        for i in tqdm(range(len(self._player_names)), desc="Creating AI LangGraph Agents"):
-                 
-                 
+        self._player_names = ["Mom", "Dad", "Random", "UncleMike", "UnclePeter"]
+
+        self._play_agents = []
+        self._challenge_agents = []
+
+        for i in range(len(self._player_names)):
             self._play_agents.append(PlayAgentFactory.create_agent(self._player_names[i]))
             self._challenge_agents.append(ChallengeAgentFactory.create_agent(self._player_names[i]))
-            self._block_agents.append(BlockAgentFactory.create_agent(self._player_names[i]))
             print(f"   Created AI agents for : {self._player_names[i]}")
-        
 
-       
-        for i in range(len(self._players)):
-            card1=self._deck.pop()
-            card2=self._deck.pop()
-            self._players[i].cards.append(card1)
-            self._players[i].cards.append(card2)
-            self._players[i].coins = 2
-
-            # Includes the player in the game
-            self._players[i].is_active = True
-            
+        for i in range(len(self._playerbases)):
+            card1 = self._deck.pop()
+            card2 = self._deck.pop()
+            self._players.append(AIPlayer(name=self._playerbases[i].name, cards=[card1, card2], coins=2, is_active=True))
             self._knowledges.append(RationalPlayerKnowledge(
                 player=self._playerbases[i],
                 total_players=len(self._players) - 1,
-                players=[self._playerbases[j] for j in range(len(self._playerbases)) ],
-                
-                own_cards =[card1.card_type.value,card2.card_type.value]
-    ))
-       
-       
+                players=[self._playerbases[j] for j in range(len(self._playerbases))],
+                own_cards=[card1.card_type.value, card2.card_type.value]
+            ))
 
         
 
