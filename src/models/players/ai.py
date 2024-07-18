@@ -48,6 +48,7 @@ class AIPlayer(BasePlayer):
         
         play = output_dict.get("play")
         traget  = output_dict.get('attack_on')
+        quote  = output_dict.get("quote")
 
 
         rational_knowledge = knowledgebase.to_dict()
@@ -91,6 +92,20 @@ class AIPlayer(BasePlayer):
         if target_player ==None:
             print("fixes")
             random.choice(other_players)
+        quote = output_dict.get("quote")
+        player_name =knowledgebase.player.name
+        if player_name == "Mom":
+            print_text(f"[bold magenta]{player_name}[/]: {quote}", with_markup=True)
+        elif player_name == "Dad":
+            print_text(f"[bold cyan]{player_name}[/]: {quote}", with_markup=True)
+        elif player_name == "Cousin Sam":
+            print_text(f"[bold green]{player_name}[/]: {quote}", with_markup=True)
+        elif player_name == "Uncle Peter":
+            print_text(f"[bold yellow]{player_name}[/]: {quote}", with_markup=True)
+        elif player_name == "Uncle Mike":
+            print_text(f"[bold red]{player_name}[/]: {quote}", with_markup=True)
+        else:
+            print_text(f"{player_name}: {quote}")
         return target_action, target_player
 
     def determine_challenge(self, player,claim,knowledgebase,challengeAgent) -> bool:
