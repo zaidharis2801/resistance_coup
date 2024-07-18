@@ -24,6 +24,13 @@ class AIPlayer(BasePlayer):
             "Steal": StealAction(),
             "Exchange": ExchangeAction()
         }
+        players_map = {
+    "Mom": "Player0",
+    "Dad": "Player1",
+    "Cousin Sam": "Player2",
+    "Uncle Peter": "Player3",
+    "Uncle Mike": "Player4"
+}
         available_actions_strings = [str(action) for action in available_actions]
       
 
@@ -70,8 +77,9 @@ class AIPlayer(BasePlayer):
             if traget != "":
                 for i in range(len(players_except_self)):
                     
-                    if players_except_self[i]["id"] == traget:
+                    if players_except_self[i]["name"] == traget:
                         target_player = other_players[i]
+                        break
             else:
                 target_player = random.choice(other_players)
 

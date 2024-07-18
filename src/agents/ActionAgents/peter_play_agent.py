@@ -8,17 +8,16 @@ from typing import TypedDict, Annotated, List, Union
 import operator
 from langgraph.graph import StateGraph, END
 import random
+
 from dotenv import load_dotenv
 import json
 
-
-from src.agents.ActionAgents.peter_helper_file import CoupGame
 # Load environment variables from .env file
 load_dotenv('.env')
 
 class PlayAgentState(TypedDict):
     rational_knowledge: str
-    avalaible_actions : list[str]
+    available : list[str]
     agent_out: Union[AgentAction, AgentFinish, None]
     intermediate_steps: Annotated[list[tuple[AgentAction, str]], operator.add]
 
@@ -51,7 +50,7 @@ class PlayLogicAgent:
 )
 
     def __init__(self) -> None:
-      
+
 
         self.llm = ChatOpenAI(temperature=0, openai_api_key=os.getenv('OPENAI_API_KEY'))
         self.player = "Peter"
@@ -89,7 +88,7 @@ class PlayLogicAgent:
 
 
         all_players = rational_knowledge["players"]
-        
+
         own_cards = rational_knowledge["own_cards"]
         gold_coins = rational_knowledge["player"]["coins"]
 
@@ -110,9 +109,51 @@ class PlayLogicAgent:
         players_except_self = get_players_except_self(rational_knowledge, self_player_id)
         attack_on = ""
         if chosen_play in plays2 and players_except_self:
-                attack_on = random.choice(players_except_self)["id"]
-        
-        
+                attack_on = random.choice(players_except_self)["name"]
+
+
+        return chosen_play,attack_on
+
+    @staticmethod
+    def play_tool2(rational_knowledge: str, available_actions: list):
+        """
+        Simulates making a play in the game Coup.
+
+        Args:
+        rational_knowledge (str): The knowledge base of the rational player in JSON string form.
+        available_actions (list): The list of available actions for the player.
+
+        Returns:
+        str: The play Sam is making.
+        """
+        rational_knowledge = json.loads(rational_knowledge)
+
+
+        all_players = rational_knowledge["players"]
+
+        own_cards = rational_knowledge["own_cards"]
+        gold_coins = rational_knowledge["player"]["coins"]
+
+        plays2 = ["Coup", "Assassinate", "Steal"]
+
+
+        Pc_Duke = rational_knowledge["card_counts"]["Duke"] / rational_knowledge["unknown_cards"]
+        Pc_Contessa = rational_knowledge["card_counts"]["Contessa"] / rational_knowledge["unknown_cards"]
+        Pc_Captain = rational_knowledge["card_counts"]["Captain"] / rational_knowledge["unknown_cards"]
+        Pc_Ambassador = rational_knowledge["card_counts"]["Ambassador"] / rational_knowledge["unknown_cards"]
+
+        game = CoupGame(len(rational_knowledge["players"]), len(rational_knowledge["players"]) - 1, Pc_Duke, Pc_Contessa, Pc_Captain, Pc_Ambassador, gold_coins, own_cards)
+        chosen_play, best_points = game.get_best_action()
+        def get_players_except_self(rational_knowledge, self_player_id):
+                return [player for player in rational_knowledge["players"].values() if player["id"] != self_player_id]
+
+        self_player_id = rational_knowledge["player"]["id"]
+        players_except_self = get_players_except_self(rational_knowledge, self_player_id)
+        attack_on = ""
+        if chosen_play in plays2 and players_except_self:
+                attack_on = random.choice(players_except_self)["name"]
+
+
         return chosen_play,attack_on
 
     @staticmethod
@@ -126,7 +167,7 @@ class PlayLogicAgent:
         quote (str): The quote from {player} during the block action.'
         attack_on (str):  this is the person on which the play is being attacked.
         """
-            
+
             return ""
 
     @staticmethod
@@ -143,7 +184,7 @@ class PlayLogicAgent:
     def execute_play_tool(state: list):
         action = state["agent_out"]
         tool_call = action[-1].message_log[-1].additional_kwargs["tool_calls"][-1]
-        out = PlayLogicAgent.play_tool.invoke(json.loads(tool_call["function"]["arguments"]))
+        out = PlayLogicAgent.play_tool2(state["rational_knowledge"],state["available"])
         return {"intermediate_steps": [{"play": str(out)}]}
 
     @staticmethod
@@ -181,4 +222,3 @@ class PlayLogicAgent:
         function_call = out.additional_kwargs["tool_calls"][-1]["function"]["arguments"]
         return {"agent_out": function_call}
 
-    

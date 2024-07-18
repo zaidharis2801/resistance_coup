@@ -17,7 +17,7 @@ load_dotenv('.env')
 
 class PlayAgentState(TypedDict):
     rational_knowledge: str
-    avalaible_actions : list[str]
+    available : list[str]
     agent_out: Union[AgentAction, AgentFinish, None]
     intermediate_steps: Annotated[list[tuple[AgentAction, str]], operator.add]
 
@@ -54,7 +54,7 @@ class PlayRandomAgent:
         """)
 
     def __init__(self) -> None:
-      
+
 
         self.llm = ChatOpenAI(temperature=0, openai_api_key=os.getenv('OPENAI_API_KEY'))
         self.player = "Sam"
@@ -107,7 +107,70 @@ class PlayRandomAgent:
             attack_on = random.choice(players_except_self)["id"]
 
         return chosen_play, attack_on
+    @staticmethod
+    @tool("play")
+    def play_tool(rational_knowledge: str, available_actions: list):
+        """
+        Simulates making a play in the game Coup.
 
+        Args:
+        rational_knowledge (str): The knowledge base of the rational player in JSON string form.
+        available_actions (list): The list of available actions for the player.
+
+        Returns:
+        str: The play Sam is making.
+        """
+        rational_knowledge = json.loads(rational_knowledge)
+
+        plays = available_actions
+        plays2 = ["Coup", "Assassinate", "Steal"]
+
+        # Sam's choices are completely random
+        chosen_play = random.choice(plays)
+        attack_on = ""
+
+        def get_players_except_self(rational_knowledge, self_player_id):
+            return [player for player in rational_knowledge["players"].values() if player["id"] != self_player_id]
+
+        self_player_id = rational_knowledge["player"]["id"]
+        players_except_self = get_players_except_self(rational_knowledge, self_player_id)
+
+        if chosen_play in plays2 and players_except_self:
+            attack_on = random.choice(players_except_self)["id"]
+
+        return chosen_play, attack_on
+
+    @staticmethod
+    def play_tool2(rational_knowledge: str, available_actions: list):
+        """
+        Simulates making a play in the game Coup.
+
+        Args:
+        rational_knowledge (str): The knowledge base of the rational player in JSON string form.
+        available_actions (list): The list of available actions for the player.
+
+        Returns:
+        str: The play Sam is making.
+        """
+        rational_knowledge = json.loads(rational_knowledge)
+
+        plays = available_actions
+        plays2 = ["Coup", "Assassinate", "Steal"]
+
+        # Sam's choices are completely random
+        chosen_play = random.choice(plays)
+        attack_on = ""
+
+        def get_players_except_self(rational_knowledge, self_player_id):
+            return [player for player in rational_knowledge["players"].values() if player["id"] != self_player_id]
+
+        self_player_id = rational_knowledge["player"]["id"]
+        players_except_self = get_players_except_self(rational_knowledge, self_player_id)
+
+        if chosen_play in plays2 and players_except_self:
+            attack_on = random.choice(players_except_self)["id"]
+
+        return chosen_play, attack_on
     @staticmethod
     @tool("final_answer_play")
     def final_answer_tool_play(play: str, attack_on: str, quote: str):
@@ -119,7 +182,7 @@ class PlayRandomAgent:
         quote (str): The quote from {player} during the block action.'
         attack_on (str):  this is the person on which the play is being attacked.
         """
-            
+
             return ""
 
     @staticmethod
@@ -136,8 +199,9 @@ class PlayRandomAgent:
     def execute_play_tool(state: list):
         action = state["agent_out"]
         tool_call = action[-1].message_log[-1].additional_kwargs["tool_calls"][-1]
-        out = PlayRandomAgent.play_tool.invoke(json.loads(tool_call["function"]["arguments"]))
+        out = PlayRandomAgent.play_tool2(state["rational_knowledge"],state["available"])
         return {"intermediate_steps": [{"play": str(out)}]}
+
 
     @staticmethod
     def play_final_answer(state: list):
@@ -177,4 +241,3 @@ class PlayRandomAgent:
         function_call = out.additional_kwargs["tool_calls"][-1]["function"]["arguments"]
         return {"agent_out": function_call}
 
-    

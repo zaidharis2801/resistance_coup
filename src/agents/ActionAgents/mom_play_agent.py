@@ -17,7 +17,7 @@ load_dotenv('.env')
 
 class PlayAgentState(TypedDict):
     rational_knowledge: str
-    avalaible_actions : list[str]
+    available : list[str]
     agent_out: Union[AgentAction, AgentFinish, None]
     intermediate_steps: Annotated[list[tuple[AgentAction, str]], operator.add]
 
@@ -49,7 +49,7 @@ Player Knowledge: {{rational_knowledge}}
     """)
 
     def __init__(self) -> None:
-      
+
 
         self.llm = ChatOpenAI(temperature=0, openai_api_key=os.getenv('OPENAI_API_KEY'))
         self.player = "Mom"
@@ -135,7 +135,7 @@ Player Knowledge: {{rational_knowledge}}
 
         chosen_play = choose_best_play(plays)
         attack_on = ""
-
+        
         def get_players_except_self(rational_knowledge, self_player_id):
             return [player for player in rational_knowledge["players"].values() if player["id"] != self_player_id]
 
@@ -151,10 +151,93 @@ Player Knowledge: {{rational_knowledge}}
 
             print(f"Attack probabilities: {probabilities}")
 
-            attack_on = random.choices(players_except_self, probabilities, k=1)[0]["id"]
+            attack_on = random.choices(players_except_self, probabilities, k=1)[0]["name"]
 
         return chosen_play, attack_on
 
+    @staticmethod  
+    def play_tool2(rational_knowledge: str,available_actions:list):
+        """
+    Simulates making a play in the game Coup.
+
+    Args:
+    rational_knowledge (dict): The knowledge base of the rational player in dictionary form.
+
+
+    Returns:
+    str: what is the play mom is making
+    """
+        rational_knowledge = json.loads(rational_knowledge)
+
+        plays = available_actions
+        plays2 = ["Coup", "Assassinate", "Steal"]
+
+        def choose_best_play(available_actions):
+            preferred_actions = ["Income", "Foreign Aid"]
+            aggressive_actions = ["Coup", "Assassinate", "Steal"]
+
+            # Filter the available preferred and other actions
+            available_preferred_actions = [action for action in preferred_actions if action in available_actions]
+            available_aggressive_actions = [action for action in aggressive_actions if action in available_actions]
+
+            # Define probabilities
+            preferred_probability = 0.7
+            aggressive_probability = 0.3
+
+            # Calculate number of available preferred and aggressive actions
+            num_preferred = len(available_preferred_actions)
+            num_aggressive = len(available_aggressive_actions)
+
+            # If no preferred actions are available, only use aggressive actions
+            if num_preferred == 0:
+                probabilities = [1 / num_aggressive] * num_aggressive
+                all_available_actions = available_aggressive_actions
+            # If no aggressive actions are available, only use preferred actions
+            elif num_aggressive == 0:
+                probabilities = [1 / num_preferred] * num_preferred
+                all_available_actions = available_preferred_actions
+            else:
+                # Assign probabilities
+                preferred_prob_each = preferred_probability / num_preferred
+                aggressive_prob_each = aggressive_probability / num_aggressive
+
+                probabilities = (
+                    [preferred_prob_each] * num_preferred +
+                    [aggressive_prob_each] * num_aggressive
+                )
+
+                all_available_actions = available_preferred_actions + available_aggressive_actions
+
+            # Print the probabilities for debugging
+            print(f"Available actions: {all_available_actions}")
+            print(f"Probabilities: {probabilities}")
+
+            # Choose an action based on the defined probabilities
+            chosen_action = random.choices(all_available_actions, probabilities, k=1)[0]
+
+            return chosen_action
+
+        chosen_play = choose_best_play(plays)
+        attack_on = ""
+        
+        def get_players_except_self(rational_knowledge, self_player_id):
+            return [player for player in rational_knowledge["players"].values() if player["id"] != self_player_id]
+
+        self_player_id = rational_knowledge["player"]["id"]
+        players_except_self = get_players_except_self(rational_knowledge, self_player_id)
+
+        if chosen_play in plays2:
+            if len(players_except_self) > 1:
+                probabilities = [0.9 if player["id"] == "Player1" else 0.1 / (len(players_except_self) - 1) for player in players_except_self]
+            else:
+                probabilities = [1.0]  # If there is only one player, attack that player
+
+
+            print(f"Attack probabilities: {probabilities}")
+
+            attack_on = random.choices(players_except_self, probabilities, k=1)[0]["name"]
+
+        return chosen_play, attack_on
     @staticmethod
     @tool("final_answer_play")
     def final_answer_tool_play(play: str, attack_on: str, quote: str):
@@ -166,7 +249,7 @@ Player Knowledge: {{rational_knowledge}}
     quote (str): The quote from {player} during the block action.'
     attack_on (str):  this is the person on which the play is being attacked.
     """
-         
+
          return ""
 
     @staticmethod
@@ -183,8 +266,9 @@ Player Knowledge: {{rational_knowledge}}
     def execute_play_tool(state: list):
         action = state["agent_out"]
         tool_call = action[-1].message_log[-1].additional_kwargs["tool_calls"][-1]
-        out = PlayMomAgent.play_tool.invoke(json.loads(tool_call["function"]["arguments"]))
+        out = PlayMomAgent.play_tool2(state["rational_knowledge"],state["available"])
         return {"intermediate_steps": [{"play": str(out)}]}
+
 
     @staticmethod
     def play_final_answer(state: list):
@@ -218,4 +302,3 @@ Player Knowledge: {{rational_knowledge}}
         function_call = out.additional_kwargs["tool_calls"][-1]["function"]["arguments"]
         return {"agent_out": function_call}
 
-    

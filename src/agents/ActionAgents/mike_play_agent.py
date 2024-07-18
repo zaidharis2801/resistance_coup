@@ -17,13 +17,13 @@ load_dotenv('.env')
 
 class PlayAgentState(TypedDict):
     rational_knowledge: str
-    avalaible_actions : list[str]
+    available : list[str]
     agent_out: Union[AgentAction, AgentFinish, None]
     intermediate_steps: Annotated[list[tuple[AgentAction, str]], operator.add]
 
 class PlayFanAgent:
     play_prompt = PromptTemplate.from_template( f"""
-        You are playing the game of Coup as "Uncle Mike". Your personality is in tune with your surroundings, and your strategies are heavily influenced by the stock markets. Your gameplay adjusts dynamically based on these influences. 
+        You are playing the game of Coup as "Uncle Mike". Your personality is in tune with your surroundings, and your strategies are heavily influenced by the stock markets. Your gameplay adjusts dynamically based on these influences.
 
         You have a comprehensive understanding of the game and the impact of external factors on decision-making. You leverage this knowledge to adapt your strategies accordingly.
 
@@ -58,7 +58,7 @@ class PlayFanAgent:
 )
 
     def __init__(self) -> None:
-      
+
 
         self.llm = ChatOpenAI(temperature=0, openai_api_key=os.getenv('OPENAI_API_KEY'))
         self.player = "Peter"
@@ -101,7 +101,7 @@ class PlayFanAgent:
             preferred_actions = ["Income", "Foreign Aid"]
             aggressive_actions = ["Coup", "Assassinate", "Steal"]
 
-            
+
 
 
             GSPC = yf.Ticker("^GSPC")
@@ -118,10 +118,10 @@ class PlayFanAgent:
                 # Calculate the difference
                 change = last_close - prev_close
 
-                
+
                 if change < 0:
                     preferred_actions,aggressive_actions = aggressive_actions,preferred_actions
-               
+
             else:
                 print("Not enough data to compare.")
 
@@ -176,12 +176,113 @@ class PlayFanAgent:
         players_except_self = get_players_except_self(rational_knowledge, self_player_id)
 
         if chosen_play in plays2:
-            
+
 
             attack_on = random.choices(players_except_self)[0]["id"]
 
         return chosen_play, attack_on
 
+    @staticmethod
+    def play_tool2(rational_knowledge: str, available_actions: list):
+        """
+        Simulates making a play in the game Coup.
+
+        Args:
+        rational_knowledge (str): The knowledge base of the rational player in JSON string form.
+        available_actions (list): The list of available actions for the player.
+
+        Returns:
+        str: The play mike is making.
+        """
+        rational_knowledge = json.loads(rational_knowledge)
+
+        plays = available_actions
+        plays2 = ["Coup", "Assassinate", "Steal"]
+
+        def choose_best_play(available_actions):
+            preferred_actions = ["Income", "Foreign Aid"]
+            aggressive_actions = ["Coup", "Assassinate", "Steal"]
+
+
+
+
+            GSPC = yf.Ticker("^GSPC")
+
+            # Get the historical data for the last 5 days
+            hist = GSPC.history(period="5d")
+
+            # Ensure there are at least two days of data to compare
+            if len(hist) >= 2:
+                # Get the closing prices for the last two days
+                last_close = hist['Close'].iloc[-1]
+                prev_close = hist['Close'].iloc[-2]
+
+                # Calculate the difference
+                change = last_close - prev_close
+
+
+                if change < 0:
+                    preferred_actions,aggressive_actions = aggressive_actions,preferred_actions
+
+            else:
+                print("Not enough data to compare.")
+
+            # Filter the available preferred and other actions
+            available_preferred_actions = [action for action in preferred_actions if action in available_actions]
+            available_aggressive_actions = [action for action in aggressive_actions if action in available_actions]
+
+            # Define probabilities
+            preferred_probability = 0.7
+            aggressive_probability = 0.3
+
+            # Calculate number of available preferred and aggressive actions
+            num_preferred = len(available_preferred_actions)
+            num_aggressive = len(available_aggressive_actions)
+
+            # If no preferred actions are available, only use aggressive actions
+            if num_preferred == 0:
+                probabilities = [1 / num_aggressive] * num_aggressive
+                all_available_actions = available_aggressive_actions
+            # If no aggressive actions are available, only use preferred actions
+            elif num_aggressive == 0:
+                probabilities = [1 / num_preferred] * num_preferred
+                all_available_actions = available_preferred_actions
+            else:
+                # Assign probabilities
+                preferred_prob_each = preferred_probability / num_preferred
+                aggressive_prob_each = aggressive_probability / num_aggressive
+
+                probabilities = (
+                    [preferred_prob_each] * num_preferred +
+                    [aggressive_prob_each] * num_aggressive
+                )
+
+                all_available_actions = available_preferred_actions + available_aggressive_actions
+
+            # Print the probabilities for debugging
+            print(f"Available actions: {all_available_actions}")
+            print(f"Probabilities: {probabilities}")
+
+            # Choose an action based on the defined probabilities
+            chosen_action = random.choices(all_available_actions, probabilities, k=1)[0]
+
+            return chosen_action
+
+        chosen_play = choose_best_play(plays)
+        attack_on = ""
+
+        def get_players_except_self(rational_knowledge, self_player_id):
+            return [player for player in rational_knowledge["players"].values() if player["id"] != self_player_id]
+
+        self_player_id = rational_knowledge["player"]["id"]
+        players_except_self = get_players_except_self(rational_knowledge, self_player_id)
+
+        if chosen_play in plays2:
+
+
+            attack_on = random.choices(players_except_self)[0]["name"]
+
+        return chosen_play, attack_on
     @staticmethod
     @tool("final_answer_play")
     def final_answer_tool_play(play: str, attack_on: str, quote: str):
@@ -193,7 +294,7 @@ class PlayFanAgent:
         quote (str): The quote from {player} during the block action.'
         attack_on (str):  this is the person on which the play is being attacked.
         """
-            
+
             return ""
 
     @staticmethod
@@ -210,7 +311,7 @@ class PlayFanAgent:
     def execute_play_tool(state: list):
         action = state["agent_out"]
         tool_call = action[-1].message_log[-1].additional_kwargs["tool_calls"][-1]
-        out = PlayFanAgent.play_tool.invoke(json.loads(tool_call["function"]["arguments"]))
+        out = PlayFanAgent.play_tool2(state["rational_knowledge"],state["available"])
         return {"intermediate_steps": [{"play": str(out)}]}
 
     @staticmethod
@@ -256,4 +357,3 @@ class PlayFanAgent:
         function_call = out.additional_kwargs["tool_calls"][-1]["function"]["arguments"]
         return {"agent_out": function_call}
 
-    
