@@ -158,8 +158,8 @@ class PlayFanAgent:
                 all_available_actions = available_preferred_actions + available_aggressive_actions
 
             # Print the probabilities for debugging
-            print(f"Available actions: {all_available_actions}")
-            print(f"Probabilities: {probabilities}")
+            # print(f"Available actions: {all_available_actions}")
+            # print(f"Probabilities: {probabilities}")
 
             # Choose an action based on the defined probabilities
             chosen_action = random.choices(all_available_actions, probabilities, k=1)[0]
@@ -260,8 +260,8 @@ class PlayFanAgent:
                 all_available_actions = available_preferred_actions + available_aggressive_actions
 
             # Print the probabilities for debugging
-            print(f"Available actions: {all_available_actions}")
-            print(f"Probabilities: {probabilities}")
+            # print(f"Available actions: {all_available_actions}")
+            # print(f"Probabilities: {probabilities}")
 
             # Choose an action based on the defined probabilities
             chosen_action = random.choices(all_available_actions, probabilities, k=1)[0]

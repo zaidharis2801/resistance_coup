@@ -124,9 +124,9 @@ Player Knowledge: {{rational_knowledge}}
 
                 all_available_actions = available_preferred_actions + available_aggressive_actions
 
-            # Print the probabilities for debugging
-            print(f"Available actions: {all_available_actions}")
-            print(f"Probabilities: {probabilities}")
+            # # Print the probabilities for debugging
+            # print(f"Available actions: {all_available_actions}")
+            # print(f"Probabilities: {probabilities}")
 
             # Choose an action based on the defined probabilities
             chosen_action = random.choices(all_available_actions, probabilities, k=1)[0]
@@ -149,7 +149,7 @@ Player Knowledge: {{rational_knowledge}}
                 probabilities = [1.0]  # If there is only one player, attack that player
 
 
-            print(f"Attack probabilities: {probabilities}")
+            # print(f"Attack probabilities: {probabilities}")
 
             attack_on = random.choices(players_except_self, probabilities, k=1)[0]["name"]
 
@@ -209,8 +209,8 @@ Player Knowledge: {{rational_knowledge}}
                 all_available_actions = available_preferred_actions + available_aggressive_actions
 
             # Print the probabilities for debugging
-            print(f"Available actions: {all_available_actions}")
-            print(f"Probabilities: {probabilities}")
+            # print(f"Available actions: {all_available_actions}")
+            # print(f"Probabilities: {probabilities}")
 
             # Choose an action based on the defined probabilities
             chosen_action = random.choices(all_available_actions, probabilities, k=1)[0]
@@ -233,7 +233,7 @@ Player Knowledge: {{rational_knowledge}}
                 probabilities = [1.0]  # If there is only one player, attack that player
 
 
-            print(f"Attack probabilities: {probabilities}")
+            # print(f"Attack probabilities: {probabilities}")
 
             attack_on = random.choices(players_except_self, probabilities, k=1)[0]["name"]
 

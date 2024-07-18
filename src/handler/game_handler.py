@@ -213,7 +213,7 @@ class ResistanceCoupGameHandler:
                 self._give_coin_to_treasury(player, player.coins)
                 del_id = self._knowledges[ind].player.id
                 self._knowledges.pop(ind)
-                for i in self._knowledges:
+                for i in range(len(self._knowledges)):
                     self._knowledges[i].players.pop(del_id)
 
                 return player

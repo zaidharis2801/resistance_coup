@@ -200,8 +200,8 @@ class PlayDadAgent:
                 all_available_actions = available_preferred_actions + available_other_actions
 
             # Print the probabilities for debugging
-            print(f"Available actions: {all_available_actions}")
-            print(f"Probabilities: {probabilities}")
+            # print(f"Available actions: {all_available_actions}")
+            # print(f"Probabilities: {probabilities}")
 
             # Choose an action based on the defined probabilities
             chosen_action = random.choices(all_available_actions, probabilities, k=1)[0]
@@ -217,7 +217,7 @@ class PlayDadAgent:
         if chosen_play in plays2:
             probabilities = [0.1 if player["id"] == "Player0" else 0.9 / (len(players_except_self) - 1) for player in players_except_self]
 
-            print(f"Attack probabilities: {probabilities}")
+            #print(f"Attack probabilities: {probabilities}")
 
             attack_on = random.choices(players_except_self, probabilities, k=1)[0]['name']
 

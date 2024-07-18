@@ -95,7 +95,7 @@ class AIPlayer(BasePlayer):
         """Choose whether to challenge the current player"""
 
         # 20% chance of challenging
-        print("%"*80)
+        
         inputs_challenge = {
     "rational_knowledge": json.dumps(knowledgebase.to_dict()),
     "claimant": json.dumps(player.to_dict()),
