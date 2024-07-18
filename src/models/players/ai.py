@@ -34,7 +34,7 @@ class AIPlayer(BasePlayer):
         available_actions_strings = [str(action) for action in available_actions]
       
 
-        print_text(f"[bold magenta]{self}[/] is thinking...", with_markup=True)
+        print_text(f"[bold magenta]{self.name}[/] is thinking...", with_markup=True)
         rational_knowledge_dict_str = json.dumps(knowledgebase.to_dict())
         inputs_play2 = {
             "rational_knowledge": rational_knowledge_dict_str,
@@ -88,7 +88,9 @@ class AIPlayer(BasePlayer):
             target_action = random.choice(available_actions)
             if target_action.requires_target:
                 target_player = random.choice(other_players)
-
+        if target_player ==None:
+            print("fixes")
+            random.choice(other_players)
         return target_action, target_player
 
     def determine_challenge(self, player,claim,knowledgebase,challengeAgent) -> bool:
