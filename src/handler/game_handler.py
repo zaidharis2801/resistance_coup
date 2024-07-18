@@ -515,6 +515,6 @@ class ResistanceCoupGameHandler:
         # }
         # out = self._play_agents[0].get_result(inputs_play)
         # print(out["agent_out"])
-        hi= input("buffer: ")
+        
         return False
 
