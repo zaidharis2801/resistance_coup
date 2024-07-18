@@ -104,7 +104,7 @@ class PlayRandomAgent:
         players_except_self = get_players_except_self(rational_knowledge, self_player_id)
 
         if chosen_play in plays2 and players_except_self:
-            attack_on = random.choice(players_except_self)["id"]
+            attack_on = random.choice(players_except_self)["name"]
 
         return chosen_play, attack_on
     @staticmethod
